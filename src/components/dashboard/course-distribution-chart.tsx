@@ -44,7 +44,7 @@ const CourseDistributionChart = () => {
           className="mx-auto aspect-square max-h-[250px]"
         >
           <PieChart>
-            <Tooltip content={<ChartTooltipContent nameKey="type" hideLabel />} />
+            <ChartTooltip content={<ChartTooltipContent nameKey="type" hideLabel />} />
             <Pie data={courseDistributionData} dataKey="count" nameKey="type" innerRadius={60}>
               {courseDistributionData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />

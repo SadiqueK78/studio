@@ -1,8 +1,8 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { facultyWorkloadData } from '@/lib/placeholder-data';
 
 const chartConfig = {
@@ -31,7 +31,7 @@ const FacultyWorkloadChart = () => {
               tickFormatter={(value) => value.slice(0, 3)}
             />
              <YAxis />
-            <Tooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent />} />
             <Bar dataKey="workload" fill="var(--color-workload)" radius={4} />
           </BarChart>
         </ChartContainer>
