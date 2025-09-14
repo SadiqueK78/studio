@@ -1,16 +1,19 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { suggestOptimalSchedule, SuggestOptimalScheduleOutput } from '@/ai/flows/suggest-optimal-schedule';
+import { extractTimetableData } from '@/ai/flows/extract-timetable-data';
+import mammoth from 'mammoth';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2 } from 'lucide-react';
+import { Loader2, UploadCloud } from 'lucide-react';
 import TimetableDisplay from './timetable-display';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   courseRequirements: z.string().min(10, 'Please provide more details.'),
@@ -22,7 +25,9 @@ const formSchema = z.object({
   fieldWorkInternshipsAndProjectComponents: z.string().optional(),
 });
 
-const defaultValues = {
+type FormSchemaType = z.infer<typeof formSchema>;
+
+const defaultValues: FormSchemaType = {
     courseRequirements: 'B.Ed. 1st Sem: 4 core courses (4 credits each), 2 pedagogy courses (4 credits each). FYUP CS 1st Sem: 3 core (4 credits), 1 minor (3 credits), 1 skill (2 credits).',
     facultyAvailability: 'Dr. Sharma: Mon-Wed 9am-5pm, expertise in Physics. Prof. Gupta: Tue-Fri 10am-4pm, expertise in CS.',
     roomCapacities: 'Room 101: 60 capacity, projector. Lab 1: 30 capacity, computers. Hall A: 120 capacity.',
@@ -34,15 +39,67 @@ const defaultValues = {
 
 export function GenerateForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
   const [result, setResult] = useState<SuggestOptimalScheduleOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.docx')) {
+        toast({
+            variant: "destructive",
+            title: "Invalid File Type",
+            description: "Please upload a .docx Word document.",
+        });
+        return;
+    }
+
+    setIsExtracting(true);
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const { value: textContent } = await mammoth.extractRawText({ arrayBuffer });
+        
+        const extractedData = await extractTimetableData({ textContent });
+
+        // Update form fields with extracted data
+        Object.keys(extractedData).forEach(key => {
+            const formKey = key as keyof FormSchemaType;
+            if (form.getValues(formKey) !== extractedData[formKey] && extractedData[formKey]) {
+              form.setValue(formKey, extractedData[formKey], { shouldValidate: true });
+            }
+        });
+
+        toast({
+          title: "Data Extracted",
+          description: "The form fields have been populated from the document.",
+        });
+
+    } catch (e) {
+        console.error("Error processing file:", e);
+        toast({
+            variant: "destructive",
+            title: "Extraction Failed",
+            description: "Could not extract data from the document. Please try again.",
+        });
+    }
+    setIsExtracting(false);
+
+    // Reset file input
+    if(fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+  };
+
+  async function onSubmit(values: FormSchemaType) {
     setIsLoading(true);
     setError(null);
     setResult(null);
@@ -66,10 +123,34 @@ export function GenerateForm() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card>
             <CardHeader>
-              <CardTitle>Generate Optimal Timetable</CardTitle>
-              <CardDescription>
-                Provide the necessary data to generate a conflict-free timetable. The more detailed the input, the better the result.
-              </CardDescription>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle>Generate Optimal Timetable</CardTitle>
+                  <CardDescription>
+                    Provide the necessary data below, or upload a Word document to auto-fill the form.
+                  </CardDescription>
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept=".docx"
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isExtracting}
+                >
+                  {isExtracting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                  )}
+                  Upload .docx
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="grid gap-6 md:grid-cols-2">
               <FormField
@@ -165,8 +246,8 @@ export function GenerateForm() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button type="submit" disabled={isLoading || isExtracting}>
+                {(isLoading || isExtracting) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Generate Timetable
               </Button>
             </CardFooter>
