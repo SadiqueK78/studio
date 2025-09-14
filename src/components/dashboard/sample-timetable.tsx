@@ -55,8 +55,8 @@ export default function SampleTimetable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Time</TableHead>
               <TableHead>Day</TableHead>
+              <TableHead>Time</TableHead>
               <TableHead>Course</TableHead>
               <TableHead>Faculty</TableHead>
               <TableHead>Room</TableHead>
@@ -68,8 +68,8 @@ export default function SampleTimetable() {
             {filteredTimetable.length > 0 ? (
               filteredTimetable.slice(0, 10).map((entry: TimetableEntry) => (
                 <TableRow key={entry.id}>
-                  <TableCell>{entry.time}</TableCell>
                   <TableCell>{entry.day}</TableCell>
+                  <TableCell>{entry.time}</TableCell>
                   <TableCell>{entry.course}</TableCell>
                   <TableCell>{entry.faculty}</TableCell>
                   <TableCell>{entry.room}</TableCell>
