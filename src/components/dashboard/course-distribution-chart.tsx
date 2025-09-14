@@ -1,6 +1,6 @@
 'use client';
 
-import { Pie, PieChart, Cell } from 'recharts';
+import { Pie, PieChart } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { courseDistributionData } from '@/lib/placeholder-data';
@@ -9,23 +9,23 @@ const chartConfig = {
   count: {
     label: 'Courses',
   },
-  Major: {
+  major: {
     label: 'Major',
     color: 'hsl(var(--chart-1))',
   },
-  Minor: {
+  minor: {
     label: 'Minor',
     color: 'hsl(var(--chart-2))',
   },
-  'Skill-Based': {
+  skill: {
     label: 'Skill-Based',
     color: 'hsl(var(--chart-3))',
   },
-  Ability: {
-    label: 'Ability Enhancement',
+  ability: {
+    label: 'Ability',
     color: 'hsl(var(--chart-4))',
   },
-  'Value-Added': {
+  value: {
     label: 'Value-Added',
     color: 'hsl(var(--chart-5))',
   },
@@ -44,12 +44,17 @@ const CourseDistributionChart = () => {
           className="mx-auto aspect-square max-h-[250px]"
         >
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent nameKey="type" hideLabel />} />
-            <Pie data={courseDistributionData} dataKey="count" nameKey="type" innerRadius={60}>
-              {courseDistributionData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
-              ))}
-            </Pie>
+            <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+            <Pie 
+                data={courseDistributionData} 
+                dataKey="count" 
+                nameKey="type" 
+                innerRadius={60}
+                strokeWidth={5}
+             />
              <ChartLegend content={<ChartLegendContent nameKey="type" />} />
           </PieChart>
         </ChartContainer>

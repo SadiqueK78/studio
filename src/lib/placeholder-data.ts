@@ -33,9 +33,9 @@ export const facultyWorkloadData = [
 ];
 
 export const courseDistributionData = [
-  { type: 'Major', count: 45, fill: 'var(--color-chart-1)' },
-  { type: 'Minor', count: 25, fill: 'var(--color-chart-2)' },
-  { type: 'Skill-Based', count: 15, fill: 'var(--color-chart-3)' },
-  { type: 'Ability', count: 10, fill: 'var(--color-chart-4)' },
-  { type: 'Value-Added', count: 5, fill: 'var(--color-chart-5)' },
+  { type: 'Major', count: 45, fill: 'var(--color-major)' },
+  { type: 'Minor', count: 25, fill: 'var(--color-minor)' },
+  { type: 'Skill-Based', count: 15, fill: 'var(--color-skill)' },
+  { type: 'Ability', count: 10, fill: 'var(--color-ability)' },
+  { type: 'Value-Added', count: 5, fill: 'var(--color-value)' },
 ];
