@@ -59,7 +59,10 @@ const CourseDistributionChart = () => {
                 innerRadius={60}
                 strokeWidth={5}
              />
-             <ChartLegend content={<ChartLegendContent nameKey="type" />} />
+             <ChartLegend
+                content={<ChartLegendContent nameKey="type" className="flex-wrap" />}
+                className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/3 [&>*]:justify-center"
+              />
           </PieChart>
         </ChartContainer>
       </CardContent>
