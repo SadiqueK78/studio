@@ -15,3 +15,11 @@ export type Faculty = {
   workload: number;
   expertise: string[];
 };
+
+export type Room = {
+  id: string;
+  name: string;
+  capacity: number;
+  type: 'Lecture Hall' | 'Lab' | 'Classroom' | 'Seminar Room';
+  equipment: string[];
+};

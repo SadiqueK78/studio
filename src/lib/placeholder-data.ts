@@ -1,4 +1,4 @@
-import { Course, Faculty } from './types';
+import { Course, Faculty, Room } from './types';
 
 export const mockCourses: Course[] = [
   { id: '1', name: 'Introduction to Psychology', code: 'PSY101', credits: 3, type: 'Major', semester: 1 },
@@ -14,6 +14,13 @@ export const mockFaculty: Faculty[] = [
   { id: 'f2', name: 'Prof. Samuel Tan', email: 's.tan@example.com', department: 'Mathematics', workload: 10, expertise: ['Calculus', 'Linear Algebra'] },
   { id: 'f3', name: 'Dr. Aisha Khan', email: 'a.khan@example.com', department: 'Psychology', workload: 14, expertise: ['Cognitive Psychology', 'Clinical Psychology'] },
   { id: 'f4', name: 'Mr. Ben Carter', email: 'b.carter@example.com', department: 'Business', workload: 8, expertise: ['Marketing', 'Management'] },
+];
+
+export const mockRooms: Room[] = [
+  { id: 'r1', name: 'Room 101', capacity: 60, type: 'Classroom', equipment: ['Projector', 'Whiteboard'] },
+  { id: 'r2', name: 'Computer Lab 1', capacity: 30, type: 'Lab', equipment: ['Computers', 'Projector'] },
+  { id: 'r3', name: 'Seminar Hall A', capacity: 120, type: 'Lecture Hall', equipment: ['Podium', 'Microphone', 'Projector'] },
+  { id: 'r4', name: 'Room 203', capacity: 45, type: 'Classroom', equipment: ['Whiteboard'] },
 ];
 
 export const facultyWorkloadData = [
