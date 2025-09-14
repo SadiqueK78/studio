@@ -9,25 +9,29 @@ const chartConfig = {
   count: {
     label: 'Courses',
   },
+  regular: {
+    label: 'Regular',
+    color: 'hsl(var(--chart-1))',
+  },
   major: {
     label: 'Major',
-    color: 'hsl(var(--chart-1))',
+    color: 'hsl(var(--chart-2))',
   },
   minor: {
     label: 'Minor',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-3))',
   },
   skill: {
     label: 'Skill-Based',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-4))',
   },
   ability: {
     label: 'Ability',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-5))',
   },
   value: {
     label: 'Value-Added',
-    color: 'hsl(var(--chart-5))',
+    color: 'hsl(var(--chart-6))',
   },
 };
 
