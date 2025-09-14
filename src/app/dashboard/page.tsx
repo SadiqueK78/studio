@@ -4,6 +4,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import SampleTimetable from '@/components/dashboard/sample-timetable';
+import FacultyWorkloadChart from '@/components/dashboard/faculty-workload-chart';
+import CourseDistributionChart from '@/components/dashboard/course-distribution-chart';
 
 export default function DashboardPage() {
   return (
@@ -11,6 +13,14 @@ export default function DashboardPage() {
       <AppHeader title="Dashboard" />
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 bg-background">
         <StatsCards />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <div className="col-span-1 lg:col-span-4">
+                <FacultyWorkloadChart />
+            </div>
+            <div className="col-span-1 lg:col-span-3">
+                <CourseDistributionChart />
+            </div>
+        </div>
         <SampleTimetable />
         <Card>
           <CardHeader>
