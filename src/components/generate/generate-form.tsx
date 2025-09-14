@@ -1,0 +1,180 @@
+'use client';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { suggestOptimalSchedule, SuggestOptimalScheduleOutput } from '@/ai/flows/suggest-optimal-schedule';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
+import { Loader2 } from 'lucide-react';
+import TimetableDisplay from './timetable-display';
+
+const formSchema = z.object({
+  courseRequirements: z.string().min(10, 'Please provide more details.'),
+  facultyAvailability: z.string().min(10, 'Please provide more details.'),
+  roomCapacities: z.string().min(10, 'Please provide more details.'),
+  studentData: z.string().min(10, 'Please provide more details.'),
+  curriculumStructure: z.string().min(10, 'Please provide more details.'),
+  teachingPracticeSchedules: z.string().optional(),
+  fieldWorkInternshipsAndProjectComponents: z.string().optional(),
+});
+
+const defaultValues = {
+    courseRequirements: 'B.Ed. 1st Sem: 4 core courses (4 credits each), 2 pedagogy courses (4 credits each). FYUP CS 1st Sem: 3 core (4 credits), 1 minor (3 credits), 1 skill (2 credits).',
+    facultyAvailability: 'Dr. Sharma: Mon-Wed 9am-5pm, expertise in Physics. Prof. Gupta: Tue-Fri 10am-4pm, expertise in CS.',
+    roomCapacities: 'Room 101: 60 capacity, projector. Lab 1: 30 capacity, computers. Hall A: 120 capacity.',
+    studentData: '120 students in B.Ed 1st Sem. 80 in FYUP CS 1st Sem. Elective choices: 40 for Psychology minor, 30 for Data Science skill course.',
+    curriculumStructure: 'Course Codes: PHY101 (4 credits, T/P: 3/1), CS101 (4 credits, T/P: 3/1).',
+    teachingPracticeSchedules: 'B.Ed. 3rd Sem Teaching Practice: 4 weeks in Oct-Nov. No classes for them.',
+    fieldWorkInternshipsAndProjectComponents: 'FYUP CS 7th Sem Project: 8 hours/week. Internships in summer.',
+};
+
+export function GenerateForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState<SuggestOptimalScheduleOutput | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const response = await suggestOptimalSchedule({
+        ...values,
+        teachingPracticeSchedules: values.teachingPracticeSchedules || '',
+        fieldWorkInternshipsAndProjectComponents: values.fieldWorkInternshipsAndProjectComponents || '',
+      });
+      setResult(response);
+    } catch (e) {
+      setError('An error occurred while generating the timetable. Please try again.');
+      console.error(e);
+    }
+    setIsLoading(false);
+  }
+
+  return (
+    <div className="space-y-8">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Generate Optimal Timetable</CardTitle>
+              <CardDescription>
+                Provide the necessary data to generate a conflict-free timetable. The more detailed the input, the better the result.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="courseRequirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Course Requirements</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Subject combinations, credit hours..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="facultyAvailability"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Faculty Availability & Expertise</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Workload, availability, expertise..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="roomCapacities"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Room & Lab Capacities</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Room numbers, capacities, equipment..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="studentData"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Student Data</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Elective choices, enrolled credits..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="curriculumStructure"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Curriculum Structure</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Course codes, credit split (theory/practical)..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+                <FormField
+                control={form.control}
+                name="teachingPracticeSchedules"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teaching Practice Schedules (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., For B.Ed. and M.Ed. programs..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="fieldWorkInternshipsAndProjectComponents"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Field Work / Internships (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="e.g., Schedules for internships, projects..." {...field} rows={5} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+            <CardFooter>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Generate Timetable
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
+      </Form>
+      {error && <div className="text-destructive">{error}</div>}
+      {result && <TimetableDisplay result={result} />}
+    </div>
+  );
+}

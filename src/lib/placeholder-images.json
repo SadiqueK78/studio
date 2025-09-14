@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "admin-avatar",
+      "description": "Admin user avatar",
+      "imageUrl": "https://picsum.photos/seed/10/40/40",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "faculty-avatar-1",
+      "description": "Faculty member avatar",
+      "imageUrl": "https://picsum.photos/seed/20/40/40",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "faculty-avatar-2",
+      "description": "Faculty member avatar",
+      "imageUrl": "https://picsum.photos/seed/21/40/40",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "faculty-avatar-3",
+      "description": "Faculty member avatar",
+      "imageUrl": "https://picsum.photos/seed/22/40/40",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "faculty-avatar-4",
+      "description": "Faculty member avatar",
+      "imageUrl": "https://picsum.photos/seed/23/40/40",
+      "imageHint": "person portrait"
+    }
+  ]
 }
