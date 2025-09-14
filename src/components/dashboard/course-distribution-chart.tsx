@@ -42,7 +42,7 @@ const CourseDistributionChart = () => {
         <CardTitle>Course Distribution</CardTitle>
         <CardDescription>Breakdown of courses by NEP 2020 category.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="flex-1 pb-4">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -56,12 +56,12 @@ const CourseDistributionChart = () => {
                 data={courseDistributionData} 
                 dataKey="count" 
                 nameKey="type" 
-                innerRadius={60}
+                innerRadius={80}
                 strokeWidth={5}
              />
              <ChartLegend
-                content={<ChartLegendContent nameKey="type" className="flex-wrap" />}
-                className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/3 [&>*]:justify-center"
+                content={<ChartLegendContent nameKey="type" />}
+                className="flex items-center justify-center"
               />
           </PieChart>
         </ChartContainer>
