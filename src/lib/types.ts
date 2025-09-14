@@ -23,3 +23,14 @@ export type Room = {
   type: 'Lecture Hall' | 'Lab' | 'Classroom' | 'Seminar Room';
   equipment: string[];
 };
+
+export type TimetableEntry = {
+    id: string;
+    day: string;
+    time: string;
+    course: string;
+    faculty: string;
+    room: string;
+    department: string;
+    year: number;
+};
