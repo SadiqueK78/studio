@@ -6,6 +6,7 @@ import Link from 'next/link';
 import SampleTimetable from '@/components/dashboard/sample-timetable';
 import FacultyWorkloadChart from '@/components/dashboard/faculty-workload-chart';
 import CourseDistributionChart from '@/components/dashboard/course-distribution-chart';
+import { SlidersHorizontal, BookCopy, Users } from 'lucide-react';
 
 export default function DashboardPage() {
   return (
@@ -29,13 +30,22 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-4">
             <Button asChild>
-              <Link href="/dashboard/generate">Generate New Timetable</Link>
+              <Link href="/dashboard/generate">
+                <SlidersHorizontal className="mr-2 h-4 w-4" />
+                Generate New Timetable
+              </Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link href="/dashboard/courses">Manage Courses</Link>
+              <Link href="/dashboard/courses">
+                <BookCopy className="mr-2 h-4 w-4" />
+                Manage Courses
+              </Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link href="/dashboard/faculty">Manage Faculty</Link>
+              <Link href="/dashboard/faculty">
+                <Users className="mr-2 h-4 w-4" />
+                Manage Faculty
+              </Link>
             </Button>
           </CardContent>
         </Card>

@@ -20,7 +20,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 
@@ -29,7 +28,7 @@ const AppSidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <Sidebar>
+    <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
           <Puzzle className="w-8 h-8 text-primary" />
@@ -128,8 +127,6 @@ const AppSidebar = () => {
 
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
-      </SidebarFooter>
     </Sidebar>
   );
 };
