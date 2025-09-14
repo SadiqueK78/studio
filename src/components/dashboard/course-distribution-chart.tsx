@@ -56,12 +56,12 @@ const CourseDistributionChart = () => {
                 data={courseDistributionData} 
                 dataKey="count" 
                 nameKey="type" 
-                innerRadius={80}
+                innerRadius={60}
                 strokeWidth={5}
              />
              <ChartLegend
                 content={<ChartLegendContent nameKey="type" />}
-                className="flex items-center justify-center"
+                className="-translate-y-2 flex-wrap justify-center gap-x-4 gap-y-2 [&>*]:basis-auto"
               />
           </PieChart>
         </ChartContainer>
