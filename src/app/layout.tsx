@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'NEP ScheduleWise',
+  title: 'ScheduleAI',
   description: 'Intelligent Timetable Generator for NEP 2020',
 };
 

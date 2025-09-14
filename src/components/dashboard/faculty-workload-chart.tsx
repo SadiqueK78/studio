@@ -32,7 +32,7 @@ const FacultyWorkloadChart = () => {
             />
              <YAxis />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="workload" fill="var(--color-workload)" radius={4} />
+            <Bar dataKey="workload" fill="hsl(var(--chart-1))" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
