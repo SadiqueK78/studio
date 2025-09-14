@@ -38,18 +38,19 @@ export type SuggestOptimalScheduleInput = z.infer<
   typeof SuggestOptimalScheduleInputSchema
 >;
 
+const TimetableEntrySchema = z.object({
+  day: z.string().describe('Day of the week (e.g., Monday).'),
+  time: z.string().describe('Time slot (e.g., 9:00 AM - 10:00 AM).'),
+  course: z.string().describe('Course name or code.'),
+  room: z.string().describe('Room or lab number.'),
+  faculty: z.string().describe('Faculty member assigned.'),
+  program: z.string().describe('Program or semester (e.g., B.Ed. 1st Sem).'),
+});
+
 const SuggestOptimalScheduleOutputSchema = z.object({
-  timetable: z
-    .string()
-    .describe('An optimized draft timetable in a readable format.'),
-  conflicts: z
-    .string()
-    .optional()
-    .describe('A list of any scheduling conflicts detected.'),
-  recommendations: z
-    .string()
-    .optional()
-    .describe('Recommendations for resolving any scheduling issues.'),
+  timetable: z.array(TimetableEntrySchema).describe('An array of timetable entries representing the optimized draft timetable.'),
+  conflicts: z.array(z.string()).optional().describe('A list of any scheduling conflicts detected.'),
+  recommendations: z.array(z.string()).optional().describe('Recommendations for resolving any scheduling issues.'),
 });
 export type SuggestOptimalScheduleOutput = z.infer<
   typeof SuggestOptimalScheduleOutputSchema
@@ -65,24 +66,27 @@ const prompt = ai.definePrompt({
   name: 'suggestOptimalSchedulePrompt',
   input: {schema: SuggestOptimalScheduleInputSchema},
   output: {schema: SuggestOptimalScheduleOutputSchema},
-  prompt: `You are an AI assistant helping generate an optimal academic timetable.
+  prompt: `You are an AI assistant helping generate an optimal academic timetable for an Indian university adhering to NEP 2020 guidelines.
 
-  Analyze the following data to create a conflict-free timetable:
+  Analyze the following data to create a conflict-free timetable. The output should be a structured JSON array of timetable entries.
 
-  Course Requirements: {{{courseRequirements}}}
-  Faculty Availability: {{{facultyAvailability}}}
-  Room Capacities: {{{roomCapacities}}}
-  Student Data: {{{studentData}}}
-  Curriculum Structure: {{{curriculumStructure}}}
-  Teaching Practice Schedules: {{{teachingPracticeSchedules}}}
-  Field Work, Internships, and Project Components: {{{fieldWorkInternshipsAndProjectComponents}}}
+  Data:
+  - Course Requirements: {{{courseRequirements}}}
+  - Faculty Availability: {{{facultyAvailability}}}
+  - Room Capacities: {{{roomCapacities}}}
+  - Student Data: {{{studentData}}}
+  - Curriculum Structure: {{{curriculumStructure}}}
+  - Teaching Practice Schedules: {{{teachingPracticeSchedules}}}
+  - Field Work/Internships: {{{fieldWorkInternshipsAndProjectComponents}}}
 
-  Ensure the timetable adheres to NEP 2020 guidelines, accommodates various course types (Major, Minor, Skill-Based, Ability Enhancement, Value-Added), and prevents scheduling conflicts.
+  Constraints & Goals:
+  1.  Adhere to NEP 2020: Accommodate Major, Minor, Skill-Based, Ability Enhancement, and Value-Added courses.
+  2.  Avoid Conflicts: Prevent double-booking of rooms, faculty, or student groups.
+  3.  Optimize Resources: Maximize the use of available rooms and faculty expertise.
+  4.  Respect Workload: Adhere to faculty workload policies.
+  5.  Structure Output: Return the timetable as a JSON array where each object contains 'day', 'time', 'course', 'room', 'faculty', and 'program'.
 
-  If any conflicts are detected, please list them and provide recommendations for resolution.
-
-  Return the timetable in a well-formatted, readable string.
-  Include detected conflicts and recommendations for the admin to review.
+  If any unresolvable conflicts are detected, list them clearly in the 'conflicts' array and provide actionable recommendations in the 'recommendations' array. If there are no conflicts, return empty arrays for 'conflicts' and 'recommendations'.
   `,
 });
 
@@ -94,6 +98,9 @@ const suggestOptimalScheduleFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('The AI model did not return a valid schedule. The response was empty.');
+    }
+    return output;
   }
 );
